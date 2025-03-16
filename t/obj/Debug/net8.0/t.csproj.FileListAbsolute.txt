@@ -1,0 +1,15 @@
+C:\Users\ASUS\source\repos\t\t\bin\Debug\net8.0\t.exe
+C:\Users\ASUS\source\repos\t\t\bin\Debug\net8.0\t.deps.json
+C:\Users\ASUS\source\repos\t\t\bin\Debug\net8.0\t.runtimeconfig.json
+C:\Users\ASUS\source\repos\t\t\bin\Debug\net8.0\t.dll
+C:\Users\ASUS\source\repos\t\t\bin\Debug\net8.0\t.pdb
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.AssemblyInfoInputs.cache
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.AssemblyInfo.cs
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.csproj.CoreCompileInputs.cache
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.dll
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\refint\t.dll
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.pdb
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.genruntimeconfig.cache
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\ref\t.dll
+C:\Users\ASUS\source\repos\t\t\obj\Debug\net8.0\t.sourcelink.json
