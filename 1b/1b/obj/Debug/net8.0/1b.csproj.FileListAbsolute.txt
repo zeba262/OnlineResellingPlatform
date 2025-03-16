@@ -1,0 +1,14 @@
+C:\Users\Tharaniha\source\repos\1b\1b\bin\Debug\net8.0\1b.exe
+C:\Users\Tharaniha\source\repos\1b\1b\bin\Debug\net8.0\1b.deps.json
+C:\Users\Tharaniha\source\repos\1b\1b\bin\Debug\net8.0\1b.runtimeconfig.json
+C:\Users\Tharaniha\source\repos\1b\1b\bin\Debug\net8.0\1b.dll
+C:\Users\Tharaniha\source\repos\1b\1b\bin\Debug\net8.0\1b.pdb
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.AssemblyInfoInputs.cache
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.AssemblyInfo.cs
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.csproj.CoreCompileInputs.cache
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.dll
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\refint\1b.dll
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.pdb
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\1b.genruntimeconfig.cache
+C:\Users\Tharaniha\source\repos\1b\1b\obj\Debug\net8.0\ref\1b.dll

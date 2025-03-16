@@ -1,0 +1,14 @@
+C:\Users\Tharaniha\source\repos\3b\3b\bin\Debug\net8.0\3b.exe
+C:\Users\Tharaniha\source\repos\3b\3b\bin\Debug\net8.0\3b.deps.json
+C:\Users\Tharaniha\source\repos\3b\3b\bin\Debug\net8.0\3b.runtimeconfig.json
+C:\Users\Tharaniha\source\repos\3b\3b\bin\Debug\net8.0\3b.dll
+C:\Users\Tharaniha\source\repos\3b\3b\bin\Debug\net8.0\3b.pdb
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.AssemblyInfoInputs.cache
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.AssemblyInfo.cs
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.csproj.CoreCompileInputs.cache
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.dll
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\refint\3b.dll
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.pdb
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\3b.genruntimeconfig.cache
+C:\Users\Tharaniha\source\repos\3b\3b\obj\Debug\net8.0\ref\3b.dll

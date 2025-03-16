@@ -1,0 +1,14 @@
+C:\Users\Tharaniha\source\repos\exp1\exp1\bin\Debug\net8.0\exp1.exe
+C:\Users\Tharaniha\source\repos\exp1\exp1\bin\Debug\net8.0\exp1.deps.json
+C:\Users\Tharaniha\source\repos\exp1\exp1\bin\Debug\net8.0\exp1.runtimeconfig.json
+C:\Users\Tharaniha\source\repos\exp1\exp1\bin\Debug\net8.0\exp1.dll
+C:\Users\Tharaniha\source\repos\exp1\exp1\bin\Debug\net8.0\exp1.pdb
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.AssemblyInfoInputs.cache
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.AssemblyInfo.cs
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.csproj.CoreCompileInputs.cache
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.dll
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\refint\exp1.dll
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.pdb
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\exp1.genruntimeconfig.cache
+C:\Users\Tharaniha\source\repos\exp1\exp1\obj\Debug\net8.0\ref\exp1.dll

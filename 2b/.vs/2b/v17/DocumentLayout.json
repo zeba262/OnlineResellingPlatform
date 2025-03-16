@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Tharaniha\\source\\repos\\2b\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4CFFA178-9F92-4730-B0B4-3EF73351A531}|2b\\2b.csproj|c:\\users\\tharaniha\\source\\repos\\2b\\2b\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4CFFA178-9F92-4730-B0B4-3EF73351A531}|2b\\2b.csproj|solutionrelative:2b\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Tharaniha\\source\\repos\\2b\\2b\\Program.cs",
+              "RelativeDocumentMoniker": "2b\\Program.cs",
+              "ToolTip": "C:\\Users\\Tharaniha\\source\\repos\\2b\\2b\\Program.cs",
+              "RelativeToolTip": "2b\\Program.cs",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAuwEwAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T02:25:47.019Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
