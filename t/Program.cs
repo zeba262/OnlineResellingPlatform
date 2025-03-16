@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 public class User
@@ -857,44 +857,40 @@ public class PaymentModule : IBuyerAction, ISellerAction
     public void SExecute() => paymentService.ProcessPayment(user);
 }
 
-// Search Products Class (Coordinator)
-public class SearchProducts : IBuyerAction
+
+//Display products module
+public interface IDisplayProducts
 {
-    private List<Product> products;
-    private List<ISearchAction> searchActions;
+    void Display(List<Product> products);
+}
 
-    public SearchProducts(List<Product> products, List<ISearchAction> searchActions)
+public class DisplayProducts : IDisplayProducts
+{
+    public void Display(List<Product> products)
     {
-        this.products = products;
-        this.searchActions = searchActions;
-    }
-
-    public void BExecute()
-    {
-        Console.WriteLine("\nSearch Products By:");
-        Console.WriteLine("1. Name");
-        Console.WriteLine("2. Category");
-        Console.WriteLine("3. Price");
-        Console.Write("Enter your choice (1, 2, or 3): ");
-        string searchChoice = Console.ReadLine();
-
-        switch (searchChoice)
+        foreach (var product in products)
         {
-            case "1":
-                searchActions[0].Search(products); // SearchByName
-                break;
-            case "2":
-                searchActions[1].Search(products); // SearchByCategory
-                break;
-            case "3":
-                searchActions[2].Search(products); // SearchByPrice
-                break;
-            default:
-                Console.WriteLine("Invalid choice!");
-                break;
+            Console.WriteLine($"PId: {product.Id}  ->  Name: {product.Name}, Model: {product.Model}, Rs.{product.DiscountedPrice}");
         }
     }
 }
+
+// Dependency injection using constructor
+public class ProductSearcher
+{
+    private readonly ISearchAction _searchProduct;
+
+    public ProductSearcher(ISearchAction searchProduct)
+    {
+        _searchProduct = searchProduct;
+    }
+
+    public void PerformSearch(List<Product> products)
+    {
+        _searchProduct.Search(products);
+    }
+}
+
 
 // Search By Name Class
 public class SearchByName : ISearchAction
@@ -923,7 +919,7 @@ public class SearchByName : ISearchAction
             {
                 if (!product.IsSoldOut)
                 {
-                    Console.WriteLine($"PId:{product.Id}  ->  Product Name: {product.Name} , Model:{product.Model} , Category: {product.Category} , {product.DiscountedPrice}rs ,  Sold By: {product.Owner}");
+                    Console.WriteLine($"PId:{product.Id}  ->  Name: {product.Name}, Model: {product.Model}, Category: {product.Category}, Rs{product.DiscountedPrice},  Sold by: {product.Owner}");
                     Console.WriteLine($"Rating: {product.Rating:F1}, Reviews: {product.Reviews.Count}, Quantity: {product.Quantity}");
                     foreach (var review in product.Reviews)
                     {
@@ -942,6 +938,8 @@ public class SearchByName : ISearchAction
         }
     }
 }
+
+
 
 // Search By Category Class
 public class SearchByCategory : ISearchAction
@@ -970,7 +968,7 @@ public class SearchByCategory : ISearchAction
             {
                 if (!product.IsSoldOut)
                 {
-                    Console.WriteLine($"PId:{product.Id}  ->  Product Name: {product.Name} , Model:{product.Model} , Category: {product.Category} , {product.DiscountedPrice}rs ,  Sold By: {product.Owner}");
+                    Console.WriteLine($"PId:{product.Id}  ->  Name: {product.Name}, Model: {product.Model}, Category: {product.Category}, Rs{product.DiscountedPrice},  Sold by: {product.Owner}");
                     Console.WriteLine($"Rating: {product.Rating:F1}, Reviews: {product.Reviews.Count}, Quantity: {product.Quantity}");
                     foreach (var review in product.Reviews)
                     {
@@ -1017,7 +1015,7 @@ public class SearchByPrice : ISearchAction
             {
                 if (!product.IsSoldOut)
                 {
-                    Console.WriteLine($"PId:{product.Id}  ->  Product Name: {product.Name} , Model:{product.Model} , Category: {product.Category} , {product.DiscountedPrice}rs ,  Sold By: {product.Owner}");
+                    Console.WriteLine($"PId:{product.Id}  ->  Name: {product.Name}, Model: {product.Model}, Category: {product.Category}, Rs{product.DiscountedPrice},  Sold by: {product.Owner}");
                     Console.WriteLine($"Rating: {product.Rating:F1}, Reviews: {product.Reviews.Count}, Quantity: {product.Quantity}");
                     foreach (var review in product.Reviews)
                     {
@@ -1224,7 +1222,7 @@ public class UserMenu
                 choice = Console.ReadLine();
 
                 if (choice == "1")
-                    new ViewProducts(products, users).BExecute();
+                    new DisplayProducts().Display(products);
                 else if (choice == "2")
                 {
                     var orderActions = new List<IOrderAction>
@@ -1243,13 +1241,32 @@ public class UserMenu
                     new PaymentModule(paymentService, user).BExecute();
                 else if (choice == "5")
                 {
-                    var searchActions = new List<ISearchAction>
+                    Console.WriteLine("Select search type:");
+                    Console.WriteLine("1. Name");
+                    Console.WriteLine("2. Category");
+                    Console.WriteLine("3. Price");
+                    Console.Write("Enter your choice: ");
+                    string searchType = Console.ReadLine();
+
+                    ISearchAction searcher;
+                    switch (searchType)
                     {
-                        new SearchByName(),
-                        new SearchByCategory(),
-                        new SearchByPrice()
-                    };
-                    new SearchProducts(products, searchActions).BExecute();
+                        case "1":
+                            searcher = new SearchByName();
+                            break;
+                        case "2":
+                            searcher = new SearchByCategory();
+                            break;
+                        case "3":
+                            searcher = new SearchByPrice();
+                            break;
+                        default:
+                            Console.WriteLine("Invalid search type.");
+                            return;
+                    }
+
+                    ProductSearcher searchHandler = new ProductSearcher(searcher);
+                    searchHandler.PerformSearch(products);
                 }
                 else if (choice == "6")
                     Console.WriteLine("Logged out successfully!");
@@ -1284,7 +1301,7 @@ class Program
 
         while (true)
         {
-            Console.WriteLine("Welcome to the Online Reselling Platform");
+            Console.WriteLine("\nWelcome to the Online Reselling Platform");
             Console.WriteLine("1. Register\n2. Login\n3. Exit\n");
             Console.Write("Enter choice: ");
             string choice = Console.ReadLine();
@@ -1293,7 +1310,7 @@ class Program
                 new RegisterUser(users).AExecute();
             else if (choice == "2")
             {
-                Console.Write("Are you an 1. Admin, 2. Seller, 3. Buyer?: ");
+                Console.Write("Are you an 1.Seller, 2.Buyer, 3.Admin?: ");
                 string userType = Console.ReadLine();
 
                 Console.Write("Enter Username: ");
@@ -1301,16 +1318,16 @@ class Program
                 Console.Write("Enter Password: ");
                 string password = Console.ReadLine();
 
-                if (userType == "1") // Admin
+                if (userType == "3") // Admin
                 {
                     if (username == adminUsername && password == adminPassword)
                         new AdminMenu(users, products, feedbackService).AExecute();
                     else
                         Console.WriteLine("Invalid Admin credentials!");
                 }
-                else if (userType == "2" || userType == "3") // Seller (1) or Buyer (2)
+                else if (userType == "1" || userType == "2") // Seller (1) or Buyer (2)
                 {
-                    string mappedRole = userType == "2" ? "1" : "2";
+                    string mappedRole = userType == "1" ? "1" : "2";
                     User user = null;
                     foreach (var u in users)
                     {
