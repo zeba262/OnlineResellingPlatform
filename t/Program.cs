@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-// Models
 public class User
 {
     public string Username { get; set; }
@@ -16,7 +14,7 @@ public class User
         Username = username;
         Password = password;
         Role = role;
-        SubscriptionType = null; // Default to no subscription
+        SubscriptionType = null;
         ContactNumber = contactNumber; // Seller's contact number
     }
 }
@@ -34,9 +32,8 @@ public class Product
     public string Owner { get; set; }
     public List<string> Reviews { get; set; } = new List<string>();
     public double Rating { get; set; } = 0;
-    public int Quantity { get; set; } // Quantity of the product
-    public bool IsSoldOut { get; set; } // Indicates if the product is sold out
-
+    public int Quantity { get; set; }
+    public bool IsSoldOut { get; set; }
     public Product(string name, string model, string category, decimal originalPrice, decimal discountedPrice, string description, string owner, int quantity)
     {
         Id = _nextId++;
@@ -104,10 +101,9 @@ public class BuyerFeedback
     }
 }
 
-// Interfaces for SOLID
 public interface ISellerAction
 {
-    void SExecute(); // Unique method name for Seller
+    void SExecute();
 }
 
 public interface IBuyerAction
@@ -122,15 +118,14 @@ public interface IAdminAction
 
 public interface IOrderAction
 {
-    void Execute(); // Common method for order-related actions
+    void Order(); // Renamed from Execute to Order
 }
 
 public interface ISearchAction
 {
-    void Execute(List<Product> products); // Common method for search-related actions
+    void Search(List<Product> products); // Renamed from Execute to Search
 }
 
-// View Products Class
 public class ViewProducts : ISellerAction, IBuyerAction, IAdminAction
 {
     private List<Product> products;
@@ -153,7 +148,15 @@ public class ViewProducts : ISellerAction, IBuyerAction, IAdminAction
         {
             if (!product.IsSoldOut)
             {
-                var seller = users.FirstOrDefault(u => u.Username == product.Owner);
+                User seller = null;
+                foreach (var user in users)
+                {
+                    if (user.Username == product.Owner)
+                    {
+                        seller = user;
+                        break;
+                    }
+                }
                 DisplayProductDetails(product, seller);
             }
             else
@@ -179,7 +182,6 @@ public class ViewProducts : ISellerAction, IBuyerAction, IAdminAction
     }
 }
 
-// Add Product Class
 public class AddProduct : ISellerAction
 {
     private List<Product> products;
@@ -233,7 +235,15 @@ public class UpdateProduct : ISellerAction
     {
         Console.Write("Enter Product ID to Update: ");
         int productId = Convert.ToInt32(Console.ReadLine());
-        Product product = products.FirstOrDefault(p => p.Id == productId);
+        Product product = null;
+        foreach (var p in products)
+        {
+            if (p.Id == productId)
+            {
+                product = p;
+                break;
+            }
+        }
         if (product != null)
         {
             UpdateProductDetails(product);
@@ -276,7 +286,15 @@ public class DeleteProduct : ISellerAction
         Console.Write("Enter Product ID to Delete: ");
         int productId = Convert.ToInt32(Console.ReadLine());
 
-        Product product = products.FirstOrDefault(p => p.Id == productId);
+        Product product = null;
+        foreach (var p in products)
+        {
+            if (p.Id == productId)
+            {
+                product = p;
+                break;
+            }
+        }
         if (product != null)
         {
             products.Remove(product);
@@ -303,11 +321,19 @@ public class PlaceOrder : IOrderAction
         this.buyerUsername = buyerUsername;
     }
 
-    public void Execute()
+    public void Order()
     {
         Console.Write("Enter Product ID to Order: ");
         int productId = Convert.ToInt32(Console.ReadLine());
-        Product product = products.FirstOrDefault(p => p.Id == productId);
+        Product product = null;
+        foreach (var p in products)
+        {
+            if (p.Id == productId)
+            {
+                product = p;
+                break;
+            }
+        }
         if (product != null)
         {
             if (product.Quantity > 0)
@@ -346,15 +372,31 @@ public class CancelOrder : IOrderAction
         this.buyerUsername = buyerUsername;
     }
 
-    public void Execute()
+    public void Order()
     {
         Console.Write("Enter Order ID to Cancel: ");
         int orderId = Convert.ToInt32(Console.ReadLine());
-        Order order = orders.FirstOrDefault(o => o.OrderId == orderId && o.BuyerUsername == buyerUsername);
+        Order order = null;
+        foreach (var o in orders)
+        {
+            if (o.OrderId == orderId && o.BuyerUsername == buyerUsername)
+            {
+                order = o;
+                break;
+            }
+        }
         if (order != null)
         {
             order.Status = "Cancelled";
-            var product = products.FirstOrDefault(p => p.Id == order.ProductId);
+            Product product = null;
+            foreach (var p in products)
+            {
+                if (p.Id == order.ProductId)
+                {
+                    product = p;
+                    break;
+                }
+            }
             if (product != null)
             {
                 product.Quantity++; // Increase quantity
@@ -381,11 +423,19 @@ public class TrackOrder : IOrderAction
         this.buyerUsername = buyerUsername;
     }
 
-    public void Execute()
+    public void Order()
     {
         Console.Write("Enter Order ID to Track: ");
         int orderId = Convert.ToInt32(Console.ReadLine());
-        Order order = orders.FirstOrDefault(o => o.OrderId == orderId && o.BuyerUsername == buyerUsername);
+        Order order = null;
+        foreach (var o in orders)
+        {
+            if (o.OrderId == orderId && o.BuyerUsername == buyerUsername)
+            {
+                order = o;
+                break;
+            }
+        }
         if (order != null)
         {
             Console.WriteLine($"Order ID: {order.OrderId}, Status: {order.Status}, Order Date: {order.OrderDate}");
@@ -409,10 +459,17 @@ public class ViewOrderHistory : IOrderAction
         this.buyerUsername = buyerUsername;
     }
 
-    public void Execute()
+    public void Order()
     {
-        var buyerOrders = orders.Where(o => o.BuyerUsername == buyerUsername).ToList();
-        if (buyerOrders.Any())
+        List<Order> buyerOrders = new List<Order>();
+        foreach (var order in orders)
+        {
+            if (order.BuyerUsername == buyerUsername)
+            {
+                buyerOrders.Add(order);
+            }
+        }
+        if (buyerOrders.Count > 0)
         {
             Console.WriteLine("\nOrder History:");
             foreach (var order in buyerOrders)
@@ -465,16 +522,16 @@ public class OrderActions : IBuyerAction
             switch (choice)
             {
                 case "1":
-                    orderActions[0].Execute(); // PlaceOrder
+                    orderActions[0].Order(); // PlaceOrder
                     break;
                 case "2":
-                    orderActions[1].Execute(); // CancelOrder
+                    orderActions[1].Order(); // CancelOrder
                     break;
                 case "3":
-                    orderActions[2].Execute(); // TrackOrder
+                    orderActions[2].Order(); // TrackOrder
                     break;
                 case "4":
-                    orderActions[3].Execute(); // ViewOrderHistory
+                    orderActions[3].Order(); // ViewOrderHistory
                     break;
                 case "5":
                     Console.WriteLine("Returning to main menu...");
@@ -513,12 +570,24 @@ public class FeedbackService
 
     public void DisplayAverageRating(string username, string role)
     {
-        if (role == "1") // Seller
+        if (role == "1")
         {
-            var sellerFeedback = sellerFeedbacks.Where(f => f.SellerUsername == username).ToList();
-            if (sellerFeedback.Any())
+            List<SellerFeedback> sellerFeedback = new List<SellerFeedback>();
+            foreach (var feedback in sellerFeedbacks)
             {
-                double averageRating = sellerFeedback.Average(f => f.Rating);
+                if (feedback.SellerUsername == username)
+                {
+                    sellerFeedback.Add(feedback);
+                }
+            }
+            if (sellerFeedback.Count > 0)
+            {
+                double totalRating = 0;
+                foreach (var feedback in sellerFeedback)
+                {
+                    totalRating += feedback.Rating;
+                }
+                double averageRating = totalRating / sellerFeedback.Count;
                 Console.WriteLine($"Average Software Rating: {averageRating:F1} stars");
             }
             else
@@ -528,16 +597,67 @@ public class FeedbackService
         }
         else if (role == "2") // Buyer
         {
-            var buyerFeedback = buyerFeedbacks.Where(f => f.BuyerUsername == username).ToList();
-            if (buyerFeedback.Any())
+            List<BuyerFeedback> buyerFeedback = new List<BuyerFeedback>();
+            foreach (var feedback in buyerFeedbacks)
             {
-                double averageRating = buyerFeedback.Average(f => f.Rating);
+                if (feedback.BuyerUsername == username)
+                {
+                    buyerFeedback.Add(feedback);
+                }
+            }
+            if (buyerFeedback.Count > 0)
+            {
+                double totalRating = 0;
+                foreach (var feedback in buyerFeedback)
+                {
+                    totalRating += feedback.Rating;
+                }
+                double averageRating = totalRating / buyerFeedback.Count;
                 Console.WriteLine($"Average Product Rating: {averageRating:F1} stars");
             }
             else
             {
                 Console.WriteLine("No feedback available yet.");
             }
+        }
+    }
+
+    // New method to display product feedback and ratings
+    public void DisplayProductFeedbackAndRatings(List<Product> products)
+    {
+        Console.WriteLine("\nProduct Feedback and Ratings:");
+        foreach (var product in products)
+        {
+            Console.WriteLine($"Product: {product.Name}, Rating: {product.Rating:F1}, Reviews: {product.Reviews.Count}, Quantity: {product.Quantity}");
+            foreach (var review in product.Reviews)
+            {
+                Console.WriteLine($"- {review}");
+            }
+        }
+    }
+
+    // New method to display seller feedback on software
+    public void DisplaySellerFeedbackOnSoftware()
+    {
+        Console.WriteLine("\nSeller Feedback on Software:");
+        foreach (var feedback in sellerFeedbacks)
+        {
+            Console.WriteLine($"Seller: {feedback.SellerUsername}, Feedback: {feedback.Feedback}, Rating: {feedback.Rating}");
+        }
+
+        if (sellerFeedbacks.Count > 0)
+        {
+            double totalRating = 0;
+            foreach (var feedback in sellerFeedbacks)
+            {
+                totalRating += feedback.Rating;
+            }
+            double averageRating = totalRating / sellerFeedbacks.Count;
+            Console.WriteLine($"\nAverage Software Rating: {averageRating:F1} stars");
+        }
+        else
+        {
+            Console.WriteLine("No feedback available yet.");
         }
     }
 }
@@ -585,7 +705,14 @@ public class GiveBuyerFeedback : IBuyerAction
 
     private bool HasPurchasedProduct(int productId)
     {
-        return orders.Any(o => o.BuyerUsername == buyerUsername && o.ProductId == productId);
+        foreach (var order in orders)
+        {
+            if (order.BuyerUsername == buyerUsername && order.ProductId == productId)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int GetRatingFromUser()
@@ -635,25 +762,25 @@ public class PaymentService
 {
     private List<User> users;
 
-    public PaymentService(List<User> users)
+    public PaymentService(List<User> users) //constructure injectio
     {
         this.users = users;
     }
 
     public void ProcessPayment(User user)
     {
-        string planChoice = GetSubscriptionPlanChoice();
-        if (planChoice == null) return;
+        var subscriptionDetails = GetSubscriptionDetails();
+        if (subscriptionDetails == null) return;
 
-        decimal amount = planChoice == "1" ? 500 : 1000;
-        user.SubscriptionType = planChoice == "1" ? "Basic" : "Premium";
+        decimal amount = subscriptionDetails.Amount;
+        user.SubscriptionType = subscriptionDetails.PlanName;
 
         Console.WriteLine($"\nAmount to Pay: ₹{amount}");
         ProcessPaymentMethod(amount);
         Console.WriteLine($"\nSubscription Activated: {user.SubscriptionType} Account");
     }
 
-    private string GetSubscriptionPlanChoice()
+    private SubscriptionDetails GetSubscriptionDetails()
     {
         Console.WriteLine("\nSubscription Plans:");
         Console.WriteLine("1. Basic Account - ₹500/month");
@@ -667,7 +794,9 @@ public class PaymentService
             return null;
         }
 
-        return planChoice;
+        return planChoice == "1"
+            ? new SubscriptionDetails { PlanName = "Basic", Amount = 500 }
+            : new SubscriptionDetails { PlanName = "Premium", Amount = 1000 };
     }
 
     private void ProcessPaymentMethod(decimal amount)
@@ -703,6 +832,12 @@ public class PaymentService
         Console.Write("CVV: ");
         string cvv = Console.ReadLine();
         Console.WriteLine("Payment successful via Credit Card!");
+    }
+
+    private class SubscriptionDetails
+    {
+        public string PlanName { get; set; }
+        public decimal Amount { get; set; }
     }
 }
 
@@ -746,13 +881,13 @@ public class SearchProducts : IBuyerAction
         switch (searchChoice)
         {
             case "1":
-                searchActions[0].Execute(products); // SearchByName
+                searchActions[0].Search(products); // SearchByName
                 break;
             case "2":
-                searchActions[1].Execute(products); // SearchByCategory
+                searchActions[1].Search(products); // SearchByCategory
                 break;
             case "3":
-                searchActions[2].Execute(products); // SearchByPrice
+                searchActions[2].Search(products); // SearchByPrice
                 break;
             default:
                 Console.WriteLine("Invalid choice!");
@@ -764,17 +899,24 @@ public class SearchProducts : IBuyerAction
 // Search By Name Class
 public class SearchByName : ISearchAction
 {
-    public void Execute(List<Product> products)
+    public void Search(List<Product> products)
     {
         Console.Write("Enter Product Name: ");
         string name = Console.ReadLine();
-        var results = products.Where(p => p.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+        List<Product> results = new List<Product>();
+        foreach (var product in products)
+        {
+            if (product.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+            {
+                results.Add(product);
+            }
+        }
         DisplaySearchResults(results);
     }
 
     private void DisplaySearchResults(List<Product> results)
     {
-        if (results.Any())
+        if (results.Count > 0)
         {
             Console.WriteLine("\nSearch Results:");
             foreach (var product in results)
@@ -804,17 +946,24 @@ public class SearchByName : ISearchAction
 // Search By Category Class
 public class SearchByCategory : ISearchAction
 {
-    public void Execute(List<Product> products)
+    public void Search(List<Product> products)
     {
         Console.Write("Enter Product Category: ");
         string category = Console.ReadLine();
-        var results = products.Where(p => p.Category.Contains(category, StringComparison.OrdinalIgnoreCase)).ToList();
+        List<Product> results = new List<Product>();
+        foreach (var product in products)
+        {
+            if (product.Category.Contains(category, StringComparison.OrdinalIgnoreCase))
+            {
+                results.Add(product);
+            }
+        }
         DisplaySearchResults(results);
     }
 
     private void DisplaySearchResults(List<Product> results)
     {
-        if (results.Any())
+        if (results.Count > 0)
         {
             Console.WriteLine("\nSearch Results:");
             foreach (var product in results)
@@ -844,17 +993,24 @@ public class SearchByCategory : ISearchAction
 // Search By Price Class
 public class SearchByPrice : ISearchAction
 {
-    public void Execute(List<Product> products)
+    public void Search(List<Product> products)
     {
         Console.Write("Enter Maximum Price (INR): ");
         decimal maxPrice = Convert.ToDecimal(Console.ReadLine());
-        var results = products.Where(p => p.DiscountedPrice <= maxPrice).ToList();
+        List<Product> results = new List<Product>();
+        foreach (var product in products)
+        {
+            if (product.DiscountedPrice <= maxPrice)
+            {
+                results.Add(product);
+            }
+        }
         DisplaySearchResults(results);
     }
 
     private void DisplaySearchResults(List<Product> results)
     {
-        if (results.Any())
+        if (results.Count > 0)
         {
             Console.WriteLine("\nSearch Results:");
             foreach (var product in results)
@@ -917,15 +1073,15 @@ public class AdminMenu : IAdminAction
 {
     private List<User> users;
     private List<Product> products;
-    private List<SellerFeedback> sellerFeedbacks;
+    private FeedbackService feedbackService;
 
-    public AdminMenu(List<User> users, List<Product> products, List<SellerFeedback> sellerFeedbacks)
+    public AdminMenu(List<User> users, List<Product> products, FeedbackService feedbackService)
     {
         this.users = users;
         this.products = products;
-        this.sellerFeedbacks = sellerFeedbacks;
+        this.feedbackService = feedbackService;
     }
-    
+
     public void AExecute()
     {
         string choice;
@@ -950,10 +1106,10 @@ public class AdminMenu : IAdminAction
                     ViewTotalProductCount();
                     break;
                 case "3":
-                    ViewProductFeedbackAndRatings();
+                    feedbackService.DisplayProductFeedbackAndRatings(products);
                     break;
                 case "4":
-                    ViewSellerFeedbackOnSoftware();
+                    feedbackService.DisplaySellerFeedbackOnSoftware();
                     break;
                 case "5":
                     new ViewProducts(products, users).AExecute();
@@ -972,52 +1128,26 @@ public class AdminMenu : IAdminAction
     {
         Console.WriteLine("\nUser Details:");
         Console.WriteLine("Sellers:");
-        foreach (var user in users.Where(u => u.Role == "1"))
+        foreach (var user in users)
         {
-            Console.WriteLine($"Username: {user.Username}, Contact: {user.ContactNumber}, Subscription: {user.SubscriptionType ?? "None"}");
+            if (user.Role == "1")
+            {
+                Console.WriteLine($"Username: {user.Username}, Contact: {user.ContactNumber}, Subscription: {user.SubscriptionType ?? "None"}");
+            }
         }
         Console.WriteLine("\nBuyers:");
-        foreach (var user in users.Where(u => u.Role == "2"))
+        foreach (var user in users)
         {
-            Console.WriteLine($"Username: {user.Username}, Subscription: {user.SubscriptionType ?? "None"}");
+            if (user.Role == "2")
+            {
+                Console.WriteLine($"Username: {user.Username}, Subscription: {user.SubscriptionType ?? "None"}");
+            }
         }
     }
 
     private void ViewTotalProductCount()
     {
         Console.WriteLine($"\nTotal Products: {products.Count}");
-    }
-
-    private void ViewProductFeedbackAndRatings()
-    {
-        Console.WriteLine("\nProduct Feedback and Ratings:");
-        foreach (var product in products)
-        {
-            Console.WriteLine($"Product: {product.Name}, Rating: {product.Rating:F1}, Reviews: {product.Reviews.Count}, Quantity: {product.Quantity}");
-            foreach (var review in product.Reviews)
-            {
-                Console.WriteLine($"- {review}");
-            }
-        }
-    }
-
-    private void ViewSellerFeedbackOnSoftware()
-    {
-        Console.WriteLine("\nSeller Feedback on Software:");
-        foreach (var feedback in sellerFeedbacks)
-        {
-            Console.WriteLine($"Seller: {feedback.SellerUsername}, Feedback: {feedback.Feedback}, Rating: {feedback.Rating}");
-        }
-
-        if (sellerFeedbacks.Any())
-        {
-            double averageRating = sellerFeedbacks.Average(f => f.Rating);
-            Console.WriteLine($"\nAverage Software Rating: {averageRating:F1} stars");
-        }
-        else
-        {
-            Console.WriteLine("No feedback available yet.");
-        }
     }
 }
 
@@ -1027,20 +1157,18 @@ public class UserMenu
     private User user;
     private List<Product> products;
     private List<Order> orders;
-    private List<SellerFeedback> sellerFeedbacks;
-    private List<User> users;
     private FeedbackService feedbackService;
     private PaymentService paymentService;
+    private List<User> users;
 
-    public UserMenu(User user, List<Product> products, List<Order> orders, List<SellerFeedback> sellerFeedbacks, List<User> users, FeedbackService feedbackService, PaymentService paymentService)
+    public UserMenu(User user, List<Product> products, List<Order> orders, List<User> users, FeedbackService feedbackService, PaymentService paymentService)
     {
         this.user = user;
         this.products = products;
         this.orders = orders;
-        this.sellerFeedbacks = sellerFeedbacks;
-        this.users = users;
         this.feedbackService = feedbackService;
         this.paymentService = paymentService;
+        this.users = users;
     }
 
     public void Execute()
@@ -1081,7 +1209,7 @@ public class UserMenu
 
             } while (choice != "7");
         }
-        else if (user.Role == "2") // Buyer
+        else if (user.Role == "2")
         {
             do
             {
@@ -1176,16 +1304,24 @@ class Program
                 if (userType == "1") // Admin
                 {
                     if (username == adminUsername && password == adminPassword)
-                        new AdminMenu(users, products, sellerFeedbacks).AExecute();
+                        new AdminMenu(users, products, feedbackService).AExecute();
                     else
                         Console.WriteLine("Invalid Admin credentials!");
                 }
                 else if (userType == "2" || userType == "3") // Seller (1) or Buyer (2)
                 {
                     string mappedRole = userType == "2" ? "1" : "2";
-                    User user = users.FirstOrDefault(u => u.Username == username && u.Password == password && u.Role == mappedRole);
+                    User user = null;
+                    foreach (var u in users)
+                    {
+                        if (u.Username == username && u.Password == password && u.Role == mappedRole)
+                        {
+                            user = u;
+                            break;
+                        }
+                    }
                     if (user != null)
-                        new UserMenu(user, products, orders, sellerFeedbacks, users, feedbackService, paymentService).Execute();
+                        new UserMenu(user, products, orders, users,feedbackService, paymentService).Execute();
                     else
                         Console.WriteLine("\nInvalid credentials or role! Try again.");
                 }
